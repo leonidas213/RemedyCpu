@@ -11,7 +11,7 @@ module Register1
 
   assign Q = state;
 
-  always @ (posedge C)
+  always @ (negedge C)
   begin
 
     if(rst)

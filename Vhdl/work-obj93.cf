@@ -1,0 +1,4 @@
+v 4
+file . "fifo.vhdl" "617209b82af5e1627005f964702f98f41311428f" "20240609163454.091":
+  entity fifo at 1( 0) + 0 on 17;
+  architecture behavioral of fifo at 26( 672) + 0 on 18;

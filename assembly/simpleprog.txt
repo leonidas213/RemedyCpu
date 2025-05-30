@@ -1,0 +1,18 @@
+ outp | addr | data (base 16)
+
+  0:0 |    0 |       ; start:
+  0:0 |    0 | 3d 03 ; jump setup
+  2:0 |    1 | 00 00 ; nop
+  4:0 |    2 |       ; interruptHandler:
+  4:0 |    2 | 3d 00 ; jump returnFromInterrupt
+  6:0 |    3 |       ; returnFromInterrupt:
+  6:0 |    3 | 44 00 ; reti
+  8:0 |    4 |       ; setup:
+  8:0 |    4 | 0a 0f ; ldi r0,15
+  a:0 |    5 | 0a 10 ; ldi r1 ,0
+  c:0 |    6 |       ; forloop:
+  c:0 |    6 | 12 01 ; sbci r0,1
+  e:0 |    7 | 0c 11 ; addi r1,1
+ 10:0 |    8 | 39 fd ; jumpNotNegative forloop
+ 12:0 |    9 |       ; suspend:
+ 12:0 |    9 | 3d ff ; jump suspend

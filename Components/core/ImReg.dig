@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <circuit>
-  <version>1</version>
+  <version>2</version>
   <attributes>
     <entry>
       <string>Description</string>
@@ -9,13 +9,13 @@ There is a 1-bit command describing this register.
 In this way, 15 bits can be stored (the 16th bit 
 activates the writing of this register and therefore 
 is always one). The 16th bit will be set according 
-to the 'immediate extend mode' (iem).
+to the &apos;immediate extend mode&apos; (iem).
 {{de Register zum Speichern von großen Konstanten.
 Es existiert ein 1-Bit Befehl, welcher dieses Register
 beschreibt. Auf diese Weise können 15 Bits gespeichert 
 werden (das 16. Bit aktiviert das Beschreiben dieses 
 Registers und ist daher immer Eins) Das 16. Bit wird 
-dem 'immediate extend mode' (iem) entsprechend gesetzt. }}</string>
+dem &apos;immediate extend mode&apos; (iem) entsprechend gesetzt. }}</string>
     </entry>
     <entry>
       <string>Width</string>
@@ -41,10 +41,6 @@ dem 'immediate extend mode' (iem) entsprechend gesetzt. }}</string>
     <visualElement>
       <elementName>Register</elementName>
       <elementAttributes>
-        <entry>
-          <string>valueIsProbe</string>
-          <boolean>true</boolean>
-        </entry>
         <entry>
           <string>Label</string>
           <string>imm</string>

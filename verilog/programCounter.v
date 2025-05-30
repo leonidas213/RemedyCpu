@@ -23,51 +23,51 @@ module programCounter
 
 
 
-  always @( posedge clk)
+  always @( posedge clk,posedge rst)
   begin
-    
-      if(!isStarted)
+
+
+    if(rst)
+    begin
+      PCr <= 16'b0000000000000000;
+      Nextpcr<=  16'b0000000000000001;
+    end
+    else
+    begin
+      if(reti)
       begin
-        PCr <= 16'b0000000000000000;
-        Nextpcr<=  16'b0000000000000001;
-        isStarted <= 1'b1;
+        PCr <= interruptAdress+1;
+        Nextpcr <=interruptAdress+2;
       end
-      else
-        if(rst)
+      else if(intr)
+      begin
+        if( relJmp || absJmp)
         begin
-          PCr <= 16'b0000000000000000;
-          Nextpcr<=  16'b0000000000000001;
+          interruptAdress <= PCr-1;
         end
         else
         begin
-          if(absJmp)
-          begin
-            PCr <=AluIn;
-            Nextpcr<=AluIn+1;
-          end
-          else if(relJmp)
-          begin
-            PCr <= PCr + AluIn+1;
-            Nextpcr <=Nextpcr+AluIn+1;
-          end
-          else if(intr)
-          begin
-            interruptAdress <=PCr;
-            PCr <= interuptFuncAdr;
-            Nextpcr <=interuptFuncAdr+1;
-          end
-          else if(reti)
-          begin
-            PCr <= interruptAdress+1;
-            Nextpcr <=interruptAdress+2;
-          end
-
-          else
-          begin
-            PCr <= PCr + 1;
-            Nextpcr <= Nextpcr + 1;
-          end
+          interruptAdress <=PCr;
         end
+        PCr <= interuptFuncAdr;
+        Nextpcr <=interuptFuncAdr+1;
+      end
+      else if(relJmp)
+      begin
+        PCr <= PCr + AluIn+1;
+        Nextpcr <=Nextpcr+AluIn+1;
+      end
+      else if(absJmp)
+      begin
+        PCr <=AluIn;
+        Nextpcr<=AluIn+1;
+      end
+      else
+      begin
+        PCr <= PCr + 1;
+        Nextpcr <= Nextpcr + 1;
+      end
+    end
 
   end
 
