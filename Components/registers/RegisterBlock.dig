@@ -84,7 +84,7 @@
           <string>clk</string>
         </entry>
       </elementAttributes>
-      <pos x="-300" y="-480"/>
+      <pos x="-380" y="-480"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -315,6 +315,51 @@
         </entry>
       </elementAttributes>
       <pos x="-300" y="-400"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Probe</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>r0</string>
+        </entry>
+      </elementAttributes>
+      <pos x="580" y="-1080"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Probe</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>r1</string>
+        </entry>
+      </elementAttributes>
+      <pos x="620" y="-1080"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Probe</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>r2</string>
+        </entry>
+      </elementAttributes>
+      <pos x="660" y="-1080"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Probe</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>r3</string>
+        </entry>
+      </elementAttributes>
+      <pos x="700" y="-1080"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Not</elementName>
+      <elementAttributes/>
+      <pos x="-340" y="-480"/>
     </visualElement>
   </visualElements>
   <wires>
@@ -743,6 +788,10 @@
       <p2 x="380" y="-480"/>
     </wire>
     <wire>
+      <p1 x="-380" y="-480"/>
+      <p2 x="-340" y="-480"/>
+    </wire>
+    <wire>
       <p1 x="-140" y="480"/>
       <p2 x="380" y="480"/>
     </wire>
@@ -776,11 +825,15 @@
     </wire>
     <wire>
       <p1 x="440" y="-1000"/>
-      <p2 x="1000" y="-1000"/>
+      <p2 x="580" y="-1000"/>
     </wire>
     <wire>
       <p1 x="1000" y="-1000"/>
       <p2 x="1320" y="-1000"/>
+    </wire>
+    <wire>
+      <p1 x="580" y="-1000"/>
+      <p2 x="1000" y="-1000"/>
     </wire>
     <wire>
       <p1 x="-120" y="360"/>
@@ -800,11 +853,15 @@
     </wire>
     <wire>
       <p1 x="440" y="-880"/>
-      <p2 x="1020" y="-880"/>
+      <p2 x="620" y="-880"/>
     </wire>
     <wire>
       <p1 x="1120" y="-880"/>
       <p2 x="1320" y="-880"/>
+    </wire>
+    <wire>
+      <p1 x="620" y="-880"/>
+      <p2 x="1020" y="-880"/>
     </wire>
     <wire>
       <p1 x="1260" y="-240"/>
@@ -836,11 +893,15 @@
     </wire>
     <wire>
       <p1 x="440" y="-760"/>
-      <p2 x="1040" y="-760"/>
+      <p2 x="660" y="-760"/>
     </wire>
     <wire>
       <p1 x="1240" y="-760"/>
       <p2 x="1320" y="-760"/>
+    </wire>
+    <wire>
+      <p1 x="660" y="-760"/>
+      <p2 x="1040" y="-760"/>
     </wire>
     <wire>
       <p1 x="340" y="-120"/>
@@ -868,6 +929,10 @@
     </wire>
     <wire>
       <p1 x="440" y="-640"/>
+      <p2 x="700" y="-640"/>
+    </wire>
+    <wire>
+      <p1 x="700" y="-640"/>
       <p2 x="1060" y="-640"/>
     </wire>
     <wire>
@@ -889,6 +954,10 @@
     <wire>
       <p1 x="1220" y="-280"/>
       <p2 x="1220" y="340"/>
+    </wire>
+    <wire>
+      <p1 x="580" y="-1080"/>
+      <p2 x="580" y="-1000"/>
     </wire>
     <wire>
       <p1 x="-200" y="-660"/>
@@ -1009,6 +1078,10 @@
     <wire>
       <p1 x="340" y="-840"/>
       <p2 x="340" y="-720"/>
+    </wire>
+    <wire>
+      <p1 x="660" y="-1080"/>
+      <p2 x="660" y="-760"/>
     </wire>
     <wire>
       <p1 x="1240" y="-760"/>
@@ -1135,6 +1208,10 @@
       <p2 x="1260" y="580"/>
     </wire>
     <wire>
+      <p1 x="620" y="-1080"/>
+      <p2 x="620" y="-880"/>
+    </wire>
+    <wire>
       <p1 x="-240" y="-640"/>
       <p2 x="-240" y="-580"/>
     </wire>
@@ -1257,6 +1334,10 @@
     <wire>
       <p1 x="1340" y="-180"/>
       <p2 x="1340" y="-140"/>
+    </wire>
+    <wire>
+      <p1 x="700" y="-1080"/>
+      <p2 x="700" y="-640"/>
     </wire>
   </wires>
   <measurementOrdering/>

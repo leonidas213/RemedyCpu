@@ -43,7 +43,7 @@
         </entry>
         <entry>
           <string>CodeFile</string>
-          <file>C:\Users\Berkant\Desktop\fpga\RemedyCpu\verilog\uartTr.v</file>
+          <file>D:\Desktop\fpga\RemedyCpu\verilog\uartTr.v</file>
         </entry>
       </elementAttributes>
       <pos x="1300" y="1020"/>
@@ -97,7 +97,7 @@
         </entry>
         <entry>
           <string>CodeFile</string>
-          <file>C:\Users\Berkant\Desktop\fpga\RemedyCpu\verilog\uartRc.v</file>
+          <file>D:\Desktop\fpga\RemedyCpu\verilog\uartRc.v</file>
         </entry>
       </elementAttributes>
       <pos x="760" y="720"/>
@@ -813,16 +813,8 @@
   </visualElements>
   <wires>
     <wire>
-      <p1 x="1020" y="1180"/>
-      <p2 x="900" y="1280"/>
-    </wire>
-    <wire>
       <p1 x="-60" y="1280"/>
       <p2 x="-20" y="1280"/>
-    </wire>
-    <wire>
-      <p1 x="880" y="1280"/>
-      <p2 x="900" y="1280"/>
     </wire>
     <wire>
       <p1 x="1320" y="1280"/>
@@ -835,6 +827,10 @@
     <wire>
       <p1 x="-140" y="1280"/>
       <p2 x="-120" y="1280"/>
+    </wire>
+    <wire>
+      <p1 x="880" y="1280"/>
+      <p2 x="1020" y="1280"/>
     </wire>
     <wire>
       <p1 x="880" y="1220"/>
@@ -1158,7 +1154,7 @@
     </wire>
     <wire>
       <p1 x="1020" y="1160"/>
-      <p2 x="1020" y="1180"/>
+      <p2 x="1020" y="1280"/>
     </wire>
   </wires>
   <measurementOrdering/>

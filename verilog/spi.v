@@ -7,10 +7,10 @@ module spi_memory_interface (
     input  wire [15:0] data_in,  // 16-bit data input (for write)
     output reg  [15:0] data_out, // 16-bit data output (for read)
     input wire         mem_sel , // 0 = RAM, 1 = Program Memory
-    output reg         busy,     // Busy signal
     output reg         spi_cs,   // SPI Chip Select (Active Low)
     output reg         spi_cs_prog , // CS for program memory (Active Low)
     output reg         spi_clk,  // SPI Clock
+    output reg         busy,     // Busy signal
     output reg         spi_mosi, // SPI MOSI (Master Out Slave In)
     input  wire        spi_miso,  // SPI MISO (Master In Slave Out)
     output reg [4:0] stateDeb
