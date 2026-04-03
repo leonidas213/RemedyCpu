@@ -1,0 +1,131 @@
+module timer (
+    input  [15:0] dOut,
+    input  [15:0] Addr,
+    input         ioW,
+    input         ioR,
+    input         C,
+    input         InterLock,
+    input  [15:0] timerConfigAddr,
+    input  [15:0] timerTargetAddr,
+    input  [15:0] timerResetAddr,
+    input  [15:0] timerReadAddr,
+    input         rst,
+    output [15:0] TimerOut,
+    output        timer_interrupt
+  );
+
+  reg [15:0] target       = 16'h0000;
+  reg [15:0] count        = 16'h0000;
+  reg [14:0] prescale_cnt = 15'h0000;
+  reg [6:0]  conf         = 7'h00;
+
+  wire wr_conf   = ioW && (Addr == timerConfigAddr);
+  wire wr_target = ioW && (Addr == timerTargetAddr);
+  wire wr_reset  = ioW && (Addr == timerResetAddr) && dOut[0];
+
+  wire rd_count  = ioR && (Addr == timerReadAddr);
+  wire rd_target = ioR && (Addr == timerTargetAddr);
+  wire rd_conf   = ioR && (Addr == timerConfigAddr);
+
+  wire       timer_en     = conf[0];
+  wire [3:0] prescaler    = conf[4:1];
+  wire       auto_reload  = conf[5];
+  wire       irq_en       = conf[6];
+  wire       target_valid = (target != 16'h0000);
+  wire       matched      = target_valid && (count == target);
+
+  reg tick;
+  always @(*)
+  begin
+    case (prescaler)
+      4'd0:
+        tick = 1'b1;                  // /1
+      4'd1:
+        tick = prescale_cnt[0];       // /2
+      4'd2:
+        tick = &prescale_cnt[1:0];    // /4
+      4'd3:
+        tick = &prescale_cnt[2:0];    // /8
+      4'd4:
+        tick = &prescale_cnt[3:0];    // /16
+      4'd5:
+        tick = &prescale_cnt[4:0];    // /32
+      4'd6:
+        tick = &prescale_cnt[5:0];    // /64
+      4'd7:
+        tick = &prescale_cnt[6:0];    // /128
+      4'd8:
+        tick = &prescale_cnt[7:0];    // /256
+      4'd9:
+        tick = &prescale_cnt[8:0];    // /512
+      4'd10:
+        tick = &prescale_cnt[9:0];    // /1024
+      4'd11:
+        tick = &prescale_cnt[10:0];   // /2048
+      4'd12:
+        tick = &prescale_cnt[11:0];   // /4096
+      4'd13:
+        tick = &prescale_cnt[12:0];   // /8192
+      4'd14:
+        tick = &prescale_cnt[13:0];   // /16384
+      4'd15:
+        tick = &prescale_cnt[14:0];   // /32768
+      default:
+        tick = 1'b1;
+    endcase
+  end
+
+  always @(posedge C)
+  begin
+    if (rst)
+    begin
+      target       <= 16'h0000;
+      count        <= 16'h0000;
+      prescale_cnt <= 15'h0000;
+      conf         <= 7'h00;
+    end
+    else
+    begin
+      if (wr_conf)
+      begin
+        conf         <= dOut[6:0];
+        prescale_cnt <= 15'h0000;
+      end
+
+      if (wr_target)
+        target <= dOut;
+
+      if (wr_reset)
+      begin
+        count        <= 16'h0000;
+        prescale_cnt <= 15'h0000;
+      end
+      else
+      begin
+        if (timer_en)
+          prescale_cnt <= prescale_cnt + 15'd1;
+
+        if (timer_en && !InterLock)
+        begin
+          if (matched)
+          begin
+            if (auto_reload)
+              count <= 16'h0000;
+          end
+          else if (tick)
+          begin
+            count <= count + 16'd1;
+          end
+        end
+      end
+    end
+  end
+
+  assign TimerOut = rd_count  ? count             :
+         rd_target ? target            :
+         rd_conf   ? {9'h000, conf}   :
+         16'h0000;
+
+  assign timer_interrupt = irq_en && !InterLock && matched;
+
+endmodule

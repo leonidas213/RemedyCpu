@@ -4,73 +4,23 @@
   <attributes/>
   <visualElements>
     <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>A</string>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-        <entry>
-          <string>InDefault</string>
-          <value v="15360" z="false"/>
-        </entry>
-      </elementAttributes>
-      <pos x="60" y="20"/>
-    </visualElement>
-    <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>B</string>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>16</int>
-        </entry>
-        <entry>
-          <string>InDefault</string>
-          <value v="15360" z="false"/>
-        </entry>
-      </elementAttributes>
-      <pos x="60" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>Aluop</string>
-        </entry>
-        <entry>
-          <string>Bits</string>
-          <int>4</int>
-        </entry>
-      </elementAttributes>
-      <pos x="40" y="400"/>
-    </visualElement>
-    <visualElement>
       <elementName>ExternalFile</elementName>
       <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>fpu16</string>
+        </entry>
         <entry>
           <string>applicationType</string>
           <appType>IVERILOG</appType>
         </entry>
         <entry>
-          <string>Label</string>
-          <string>fpu_operator</string>
-        </entry>
-        <entry>
           <string>externalInputs</string>
-          <string>mantA:11,mantB:11,signA,signB</string>
+          <string>clk,rst,start,op:2,a:16,b:16</string>
         </entry>
         <entry>
           <string>externalOutputs</string>
-          <string>mantOut:12,signOut</string>
+          <string>result:16,busy,done</string>
         </entry>
         <entry>
           <string>Width</string>
@@ -78,697 +28,131 @@
         </entry>
         <entry>
           <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpuAddSub.v</file>
+          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu16.v</file>
         </entry>
       </elementAttributes>
-      <pos x="1140" y="0"/>
+      <pos x="640" y="320"/>
     </visualElement>
     <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_align</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>expA:5,expB:5,mantA:11,mantB:11</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>alignedA:11,alignedB:11,commonExp:5</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>11</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpuAlign.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="700" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_normalize_pack</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>mantIn:12,expIn:5,signIn,roundEn</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>result:16</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>8</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpunormalize.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="1600" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>sign_a</string>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="20"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>expo_a</string>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>mantisa_A</string>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="60"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>sign_b</string>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>expo_b</string>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="180"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>mantisa_b</string>
-        </entry>
-      </elementAttributes>
-      <pos x="340" y="200"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>expo_a</string>
-        </entry>
-      </elementAttributes>
-      <pos x="640" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>mantisa_A</string>
-        </entry>
-      </elementAttributes>
-      <pos x="640" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>expo_b</string>
-        </entry>
-      </elementAttributes>
-      <pos x="640" y="20"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>mantisa_b</string>
-        </entry>
-      </elementAttributes>
-      <pos x="640" y="60"/>
-    </visualElement>
-    <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_unpack</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>in:16</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>sign,exp:5,mantissa:11</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>5</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpu Unpack.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="140" y="20"/>
-    </visualElement>
-    <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_unpack</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>in:16</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>sign,exp:5,mantissa:11</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>5</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpu Unpack.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="140" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>sign_b</string>
-        </entry>
-      </elementAttributes>
-      <pos x="1120" y="60"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>sign_a</string>
-        </entry>
-      </elementAttributes>
-      <pos x="1120" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_mult</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>a:16,b:16</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>manstisa:12,exp:5,sign</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>8</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpumult.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="1160" y="220"/>
-    </visualElement>
-    <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_normalize_pack</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>mantIn:12,expIn:5,signIn,roundEn</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>result:16</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>8</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\fpunormalize.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="1600" y="220"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>A</string>
-        </entry>
-      </elementAttributes>
-      <pos x="100" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>B</string>
-        </entry>
-      </elementAttributes>
-      <pos x="100" y="140"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>A</string>
-        </entry>
-      </elementAttributes>
-      <pos x="1020" y="220"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>B</string>
-        </entry>
-      </elementAttributes>
-      <pos x="1020" y="240"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Const</elementName>
+      <elementName>Clock</elementName>
       <elementAttributes/>
-      <pos x="1540" y="300"/>
+      <pos x="540" y="260"/>
     </visualElement>
     <visualElement>
-      <elementName>Const</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Value</string>
-          <long>0</long>
-        </entry>
-      </elementAttributes>
-      <pos x="1560" y="80"/>
+      <elementName>In</elementName>
+      <elementAttributes/>
+      <pos x="460" y="300"/>
     </visualElement>
     <visualElement>
-      <elementName>ExternalFile</elementName>
-      <elementAttributes>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>fpu_div_fixed</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>a:16,b:16</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>result:16</string>
-        </entry>
-        <entry>
-          <string>Width</string>
-          <int>8</int>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\div.v</file>
-        </entry>
-      </elementAttributes>
-      <pos x="1160" y="420"/>
+      <elementName>In</elementName>
+      <elementAttributes/>
+      <pos x="440" y="360"/>
     </visualElement>
     <visualElement>
-      <elementName>ExternalFile</elementName>
+      <elementName>In</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>float16_to_int</string>
-        </entry>
-        <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>in:16</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>out:16</string>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\floatToInt.v</file>
+          <string>Bits</string>
+          <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="1220" y="540"/>
+      <pos x="420" y="440"/>
     </visualElement>
     <visualElement>
-      <elementName>ExternalFile</elementName>
+      <elementName>In</elementName>
       <elementAttributes>
         <entry>
-          <string>applicationType</string>
-          <appType>IVERILOG</appType>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>int_to_float16</string>
-        </entry>
-        <entry>
-          <string>externalInputs</string>
-          <string>in:16</string>
-        </entry>
-        <entry>
-          <string>externalOutputs</string>
-          <string>out:16</string>
-        </entry>
-        <entry>
-          <string>CodeFile</string>
-          <file>D:\Desktop\fpga\RemedyCpu\verilog\fpu\intToFloat.v</file>
+          <string>Bits</string>
+          <int>16</int>
         </entry>
       </elementAttributes>
-      <pos x="1220" y="660"/>
+      <pos x="420" y="400"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Bits</string>
+          <int>2</int>
+        </entry>
+      </elementAttributes>
+      <pos x="500" y="380"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="1"/>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>16</int>
+        </entry>
+      </elementAttributes>
+      <pos x="1020" y="320"/>
     </visualElement>
   </visualElements>
   <wires>
     <wire>
-      <p1 x="1320" y="260"/>
-      <p2 x="1600" y="280"/>
+      <p1 x="800" y="320"/>
+      <p2 x="1020" y="320"/>
     </wire>
     <wire>
-      <p1 x="1300" y="0"/>
-      <p2 x="1600" y="0"/>
+      <p1 x="600" y="320"/>
+      <p2 x="640" y="320"/>
     </wire>
     <wire>
-      <p1 x="920" y="0"/>
-      <p2 x="1140" y="0"/>
+      <p1 x="420" y="400"/>
+      <p2 x="640" y="400"/>
     </wire>
     <wire>
-      <p1 x="640" y="0"/>
-      <p2 x="700" y="0"/>
+      <p1 x="800" y="340"/>
+      <p2 x="1020" y="340"/>
     </wire>
     <wire>
-      <p1 x="80" y="0"/>
-      <p2 x="100" y="0"/>
+      <p1 x="480" y="340"/>
+      <p2 x="640" y="340"/>
     </wire>
     <wire>
-      <p1 x="240" y="160"/>
-      <p2 x="340" y="160"/>
+      <p1 x="540" y="260"/>
+      <p2 x="600" y="260"/>
     </wire>
     <wire>
-      <p1 x="60" y="160"/>
-      <p2 x="80" y="160"/>
+      <p1 x="600" y="420"/>
+      <p2 x="640" y="420"/>
     </wire>
     <wire>
-      <p1 x="80" y="160"/>
-      <p2 x="140" y="160"/>
+      <p1 x="800" y="360"/>
+      <p2 x="1020" y="360"/>
     </wire>
     <wire>
-      <p1 x="1760" y="260"/>
-      <p2 x="1880" y="260"/>
+      <p1 x="440" y="360"/>
+      <p2 x="640" y="360"/>
     </wire>
     <wire>
-      <p1 x="940" y="100"/>
-      <p2 x="1420" y="100"/>
+      <p1 x="420" y="440"/>
+      <p2 x="600" y="440"/>
     </wire>
     <wire>
-      <p1 x="1120" y="420"/>
-      <p2 x="1160" y="420"/>
+      <p1 x="460" y="300"/>
+      <p2 x="480" y="300"/>
     </wire>
     <wire>
-      <p1 x="240" y="200"/>
-      <p2 x="340" y="200"/>
+      <p1 x="500" y="380"/>
+      <p2 x="640" y="380"/>
     </wire>
     <wire>
-      <p1 x="640" y="40"/>
-      <p2 x="700" y="40"/>
+      <p1 x="480" y="300"/>
+      <p2 x="480" y="340"/>
     </wire>
     <wire>
-      <p1 x="240" y="40"/>
-      <p2 x="340" y="40"/>
+      <p1 x="600" y="260"/>
+      <p2 x="600" y="320"/>
     </wire>
     <wire>
-      <p1 x="920" y="40"/>
-      <p2 x="940" y="40"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="40"/>
-      <p2 x="1140" y="40"/>
-    </wire>
-    <wire>
-      <p1 x="1760" y="40"/>
-      <p2 x="1880" y="40"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="140"/>
-      <p2 x="100" y="140"/>
-    </wire>
-    <wire>
-      <p1 x="1540" y="300"/>
-      <p2 x="1600" y="300"/>
-    </wire>
-    <wire>
-      <p1 x="1060" y="460"/>
-      <p2 x="1160" y="460"/>
-    </wire>
-    <wire>
-      <p1 x="40" y="400"/>
-      <p2 x="100" y="400"/>
-    </wire>
-    <wire>
-      <p1 x="1560" y="80"/>
-      <p2 x="1600" y="80"/>
-    </wire>
-    <wire>
-      <p1 x="1320" y="240"/>
-      <p2 x="1600" y="240"/>
-    </wire>
-    <wire>
-      <p1 x="1020" y="240"/>
-      <p2 x="1060" y="240"/>
-    </wire>
-    <wire>
-      <p1 x="1060" y="240"/>
-      <p2 x="1160" y="240"/>
-    </wire>
-    <wire>
-      <p1 x="1420" y="20"/>
-      <p2 x="1600" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="920" y="20"/>
-      <p2 x="1140" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="640" y="20"/>
-      <p2 x="700" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="20"/>
-      <p2 x="80" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="240" y="20"/>
-      <p2 x="340" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="1300" y="20"/>
-      <p2 x="1340" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="20"/>
-      <p2 x="140" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="240" y="180"/>
-      <p2 x="340" y="180"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="660"/>
-      <p2 x="1220" y="660"/>
-    </wire>
-    <wire>
-      <p1 x="1280" y="660"/>
-      <p2 x="1780" y="660"/>
-    </wire>
-    <wire>
-      <p1 x="1320" y="440"/>
-      <p2 x="1880" y="440"/>
-    </wire>
-    <wire>
-      <p1 x="1320" y="220"/>
-      <p2 x="1600" y="220"/>
-    </wire>
-    <wire>
-      <p1 x="1020" y="220"/>
-      <p2 x="1120" y="220"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="220"/>
-      <p2 x="1160" y="220"/>
-    </wire>
-    <wire>
-      <p1 x="1340" y="60"/>
-      <p2 x="1600" y="60"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="60"/>
-      <p2 x="1140" y="60"/>
-    </wire>
-    <wire>
-      <p1 x="640" y="60"/>
-      <p2 x="700" y="60"/>
-    </wire>
-    <wire>
-      <p1 x="240" y="60"/>
-      <p2 x="340" y="60"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="540"/>
-      <p2 x="1220" y="540"/>
-    </wire>
-    <wire>
-      <p1 x="1280" y="540"/>
-      <p2 x="1780" y="540"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="220"/>
-      <p2 x="1120" y="420"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="540"/>
-      <p2 x="1120" y="660"/>
-    </wire>
-    <wire>
-      <p1 x="1120" y="420"/>
-      <p2 x="1120" y="540"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="0"/>
-      <p2 x="80" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="140"/>
-      <p2 x="80" y="160"/>
-    </wire>
-    <wire>
-      <p1 x="1060" y="240"/>
-      <p2 x="1060" y="460"/>
-    </wire>
-    <wire>
-      <p1 x="1420" y="20"/>
-      <p2 x="1420" y="100"/>
-    </wire>
-    <wire>
-      <p1 x="940" y="40"/>
-      <p2 x="940" y="100"/>
-    </wire>
-    <wire>
-      <p1 x="1340" y="20"/>
-      <p2 x="1340" y="60"/>
+      <p1 x="600" y="420"/>
+      <p2 x="600" y="440"/>
     </wire>
   </wires>
   <measurementOrdering/>

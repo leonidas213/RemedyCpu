@@ -2877,34 +2877,6 @@
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>timerSel</string>
-        </entry>
-        <entry>
-          <string>Inputs</string>
-          <int>1</int>
-        </entry>
-      </elementAttributes>
-      <pos x="64600" y="-100240"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Const</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Value</string>
-          <long>0</long>
-        </entry>
-        <entry>
-          <string>Inputs</string>
-          <int>1</int>
-        </entry>
-      </elementAttributes>
-      <pos x="64580" y="-100240"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Out</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
           <string>read-flags</string>
         </entry>
         <entry>
@@ -7849,10 +7821,6 @@
     <wire>
       <p1 x="64200" y="-110480"/>
       <p2 x="64260" y="-110480"/>
-    </wire>
-    <wire>
-      <p1 x="64580" y="-100240"/>
-      <p2 x="64600" y="-100240"/>
     </wire>
     <wire>
       <p1 x="64340" y="-114580"/>
