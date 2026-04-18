@@ -3,23 +3,24 @@ module Register1
     input D,
     input C,
     input en,
-    input rst,
+    input rst_n,
     output Q
   );
 
-  reg  state = 'h0;
+  reg  state;
 
   assign Q = state;
 
-  always @ (negedge C)
+  always @ (negedge C, negedge rst_n)
   begin
 
-    if(rst)
+    if(!rst_n)
     begin
       state <= 1'h0;
     end
-    if (en)
-      state <= D;
+    else
+      if (en)
+        state <= D;
 
   end
 endmodule

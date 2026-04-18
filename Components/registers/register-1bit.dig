@@ -36,7 +36,7 @@
         </entry>
         <entry>
           <string>externalInputs</string>
-          <string>D,C,en,rst</string>
+          <string>D,C,en,rst_n</string>
         </entry>
         <entry>
           <string>externalOutputs</string>

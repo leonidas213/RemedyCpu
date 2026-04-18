@@ -1,8 +1,8 @@
 module programCounter
-(
+  (
     input  wire [15:0] AluIn,
     input  wire        clk,
-    input  wire        rst,
+    input  wire        rst_n,
     input  wire        pc_en,
     input  wire        absJmp,
     input  wire        intr,
@@ -10,20 +10,20 @@ module programCounter
     input  wire        relJmp,
     output wire [15:0] Nextpc,
     output wire [15:0] PC
-);
+  );
 
- localparam [15:0] interuptFuncAdr = 16'h0002;
-  reg [15:0] interruptAdress = 16'h0000;
+  localparam [15:0] interuptFuncAdr = 16'h0002;
+  reg [15:0] interruptAdress;
 
-  reg [15:0] PCr     = 16'h0000;
-  reg [15:0] Nextpcr = 16'h0001;
+  reg [15:0] PCr;
+  reg [15:0] Nextpcr;
 
   assign Nextpc = Nextpcr;
   assign PC     = PCr;
 
-  always @(posedge clk )
+  always @(posedge clk , negedge rst_n)
   begin
-    if (rst)
+    if (!rst_n)
     begin
       PCr     <= 16'h0000;
       Nextpcr <= 16'h0001;

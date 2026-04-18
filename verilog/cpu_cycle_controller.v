@@ -1,33 +1,34 @@
 module cpu_cycle_controller
-(
+  (
     input  wire clk,
-    input  wire rst,
+    input  wire rst_n,
 
     input  wire fetch_done,
     input  wire data_done,
 
     input  wire ld,
     input  wire st,
+    input  wire flash_ld,
+
 
     output wire fetch_req,
-    output wire execute_now,
-    output wire wait_data
-);
+    output wire execute_now_pulse
+  );
 
   localparam S_REQ_FETCH  = 2'd0;
   localparam S_WAIT_FETCH = 2'd1;
   localparam S_EXECUTE    = 2'd2;
   localparam S_WAIT_DATA  = 2'd3;
 
-  reg [1:0] state = S_REQ_FETCH;
+  reg [1:0] state;
 
-  assign fetch_req   = (state == S_REQ_FETCH);
+  wire execute_now;
   assign execute_now = (state == S_EXECUTE);
-  assign wait_data   = (state == S_WAIT_DATA);
+  assign fetch_req   = (state == S_REQ_FETCH);
 
-  always @(posedge clk )
+  always @(posedge clk , negedge rst_n)
   begin
-    if (rst)
+    if (!rst_n)
     begin
       state <= S_REQ_FETCH;
     end
@@ -45,7 +46,7 @@ module cpu_cycle_controller
 
         S_EXECUTE:
         begin
-          if (ld || st)
+          if (ld || st || flash_ld)
             state <= S_WAIT_DATA;
           else
             state <= S_REQ_FETCH;
@@ -63,4 +64,15 @@ module cpu_cycle_controller
     end
   end
 
+  // rise detector
+  reg sig_d;
+  always @(posedge clk, negedge rst_n)
+  begin
+    if (!rst_n)
+      sig_d <= 1'b0;
+    else
+      sig_d <= execute_now;
+  end
+
+  assign execute_now_pulse = execute_now & ~sig_d;
 endmodule

@@ -1,6 +1,6 @@
 module spi_memory_interface (
     input  wire        clk,           // System clock
-    input  wire        spi_rst,       // Reset
+    input  wire        spi_rst_n,       // Reset
     input  wire        st,            // Store (write) signal
     input  wire        ld,            // Load (read) signal
     input  wire [15:0] addr,          // 16-bit memory address
@@ -22,21 +22,18 @@ module spi_memory_interface (
   localparam  SEND_CMD = 4'b0010;
   localparam  SEND_ADDR = 4'b0011;
   localparam  WRITE_DATA = 4'b0100;
-  localparam  READ_DUMMY = 4'b0101;
-  localparam  READ_DATA = 4'b0110;
-  localparam  STOP = 4'b0111;
-  localparam  TOGGLECLKON = 4'b1000;
-  localparam  TOGGLECLKOFF = 4'b1001;
-  localparam  decideFate = 4'b1010;
-  
+  localparam  READ_DATA = 4'b0101;
+  localparam  STOP = 4'b0110;
+  localparam  TOGGLECLKON = 4'b0111;
+  localparam  decideFate = 4'b1000;
+
   localparam  STcom = 1;
   localparam  LDcom = 0;
 
 
-  reg[4:0] state = IDLE;
-  reg[4:0] last_state = IDLE;
-  reg [0:0] command = STcom;
-  reg [0:0] firstRead = 1;
+  reg[4:0] state;
+  reg[4:0] last_state;
+  reg command;
 
   reg [7:0] shift_reg; // Shift register for SPI data
   reg [5:0] bit_cnt;   // Bit counter
@@ -46,11 +43,13 @@ module spi_memory_interface (
   reg [0:0] prev_command;
   reg [15:0] prev_addr;
   reg prev_is_continous;
+  wire [23:0] spi_addr;
+  assign spi_addr = {7'b0000000, addr, 1'b0};
 
-  always @(posedge clk )
+  always @(posedge clk , negedge spi_rst_n)
   begin
 
-    if (spi_rst)
+    if (!spi_rst_n)
     begin
       state   <= IDLE;
       spi_cs  <= 1'b1;
@@ -59,7 +58,9 @@ module spi_memory_interface (
       busy    <= 1'b0;
       bit_cnt <= 3'b000;
       byte_cnt <= 3'b000;
-      
+      command <= STcom;
+      state <= IDLE;
+      last_state <= IDLE;
     end
     else
     begin
@@ -104,46 +105,50 @@ module spi_memory_interface (
           spi_clk <= 0;
           if (bit_cnt < 8)
           begin
-            spi_mosi <= shift_reg[7];  // Send MSB first
-            shift_reg <= shift_reg << 1; // Shift left
+            spi_mosi <= shift_reg[7];   // Send MSB first
+            shift_reg <= shift_reg << 1;
             last_state <= state;
-
             state <= TOGGLECLKON;
             bit_cnt <= bit_cnt + 1;
           end
           else
           begin
             state <= SEND_ADDR;
-            shift_reg <= addr[15:8]; // Load high byte of address
+            shift_reg <= spi_addr[23:16] ;         // top address byte for 24-bit SPI flash
             bit_cnt <= 0;
+            byte_cnt <= 0;
           end
         end
 
         SEND_ADDR:
         begin
-
           spi_clk <= 0;
+
           if (bit_cnt < 8)
           begin
             spi_mosi <= shift_reg[7];
             shift_reg <= shift_reg << 1;
-            spi_clk <= 0;
             last_state <= state;
             state <= TOGGLECLKON;
             bit_cnt <= bit_cnt + 1;
           end
           else if (byte_cnt == 0)
           begin
-            shift_reg <= addr[7:0]; // Load low byte of addresscc
+            shift_reg <= spi_addr[15:8];    // middle address byte
             byte_cnt <= 1;
+            bit_cnt <= 0;
+          end
+          else if (byte_cnt == 1)
+          begin
+            shift_reg <= spi_addr[7:0];     // low address byte
+            byte_cnt <= 2;
             bit_cnt <= 0;
           end
           else
           begin
             state <= command ? WRITE_DATA : READ_DATA;
-            shift_reg <= command ? data_in[15:8] : 8'h00; // Load high data or dummy
-            recv_data[15:0] <= 16'h0000; // Clear received data
-            firstRead <= 1;
+            shift_reg <= command ? data_in[15:8] : 8'h00;
+            recv_data <= 16'h0000;
             bit_cnt <= 0;
             byte_cnt <= 0;
             spi_mosi <= 1'b0;
@@ -238,7 +243,9 @@ module spi_memory_interface (
             state <= STOP;
           end
         end
-      
+        default :
+          state <= STOP;
+
       endcase
     end
 

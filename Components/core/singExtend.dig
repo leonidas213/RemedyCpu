@@ -7,17 +7,12 @@
       <elementName>In</elementName>
       <elementAttributes>
         <entry>
-          <string>Description</string>
-          <string>instruction word
-{{de Das Befehlswort}}</string>
-        </entry>
-        <entry>
           <string>Label</string>
           <string>inst</string>
         </entry>
         <entry>
           <string>Bits</string>
-          <int>16</int>
+          <int>8</int>
         </entry>
         <entry>
           <string>isHighZ</string>
@@ -31,11 +26,11 @@
       <elementAttributes>
         <entry>
           <string>Input Splitting</string>
-          <string>16</string>
+          <string>8</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
-          <string>7,1,7</string>
+          <string>7,1</string>
         </entry>
       </elementAttributes>
       <pos x="420" y="300"/>
@@ -78,11 +73,11 @@
       <elementAttributes>
         <entry>
           <string>Input Splitting</string>
-          <string>16</string>
+          <string>8</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
-          <string>4,4,8</string>
+          <string>4,4</string>
         </entry>
       </elementAttributes>
       <pos x="420" y="500"/>
@@ -139,11 +134,11 @@
       <elementAttributes>
         <entry>
           <string>Input Splitting</string>
-          <string>16</string>
+          <string>8</string>
         </entry>
         <entry>
           <string>Output Splitting</string>
-          <string>4,4,8</string>
+          <string>4,4</string>
         </entry>
       </elementAttributes>
       <pos x="420" y="580"/>

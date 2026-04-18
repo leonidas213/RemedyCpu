@@ -1,20 +1,19 @@
 module lfsr_RandomNumberGen (
     input  [15:0] adrrIn,
-    input  [15:0] dataIn,
+    input  [7:0] dataIn,
     input         ioW,
     input         clk,
-    input         ioR,
     input  [15:0] SeedAdr,
     input  [15:0] RngAdr,
     output [15:0] Out
 );
 
-    reg [7:0] seed_reg = 8'h01;
-    reg [7:0] lfsr     = 8'h01;
+    reg [7:0] seed_reg;
+    reg [7:0] lfsr    ;
 
     wire seed_wr  = ioW && (adrrIn == SeedAdr);
-    wire seed_rd  = ioR && (adrrIn == SeedAdr);
-    wire rng_rd   = ioR && (adrrIn == RngAdr);
+    wire seed_rd  =  (adrrIn == SeedAdr);
+    wire rng_rd   =  (adrrIn == RngAdr);
 
     // 8-bit maximal-length taps
     // polynomial: x^8 + x^6 + x^5 + x^4 + 1

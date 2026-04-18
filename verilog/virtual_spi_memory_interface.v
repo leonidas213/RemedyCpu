@@ -1,21 +1,18 @@
 module spi_mem_bridge_sim
 (
-    input  wire        clk,        // main sim clock, for RAM write commit
-    input  wire        rst,
+    input  wire        clk,
+    input  wire        rst_n,
 
-    // from real spi master
     input  wire        cs_flash,
     input  wire        cs_ram,
     input  wire        sclk,
     input  wire        mosi,
     output reg         miso,
 
-    // to ROM module
     output reg  [15:0] rom_addr,
     output reg         rom_sel,
     input  wire [15:0] rom_data,
 
-    // to RAM module
     output reg  [15:0] ram_addr,
     output reg  [15:0] ram_din,
     output reg         ram_ld,
@@ -24,15 +21,15 @@ module spi_mem_bridge_sim
 );
 
   reg [7:0]  cmd_shift;
-  reg [15:0] addr_shift;
+  reg [23:0] addr_shift;
   reg [15:0] wr_shift;
   reg [15:0] rd_shift;
 
   reg [7:0]  cmd;
+  reg [23:0] addr_full;
   reg [15:0] addr;
 
   reg [5:0]  bit_count;
-  reg        active_dev;      // 0 = flash, 1 = ram
 
   reg        read_arm;
   reg        read_active;
@@ -41,50 +38,62 @@ module spi_mem_bridge_sim
   reg [15:0] write_commit_addr;
   reg [15:0] write_commit_data;
 
+  reg [7:0]  next_cmd;
+  reg [23:0] next_addr;
+  reg [15:0] next_wr;
+
+  wire flash_active;
+  wire ram_active;
   wire any_cs_active;
-  assign any_cs_active = (~cs_flash) | (~cs_ram);
+
+  assign flash_active  = ~cs_flash;
+  assign ram_active    = ~cs_ram;
+  assign any_cs_active = flash_active | ram_active;
 
   initial begin
-    miso                = 1'b0;
-    rom_addr            = 16'h0000;
-    rom_sel             = 1'b0;
-    ram_addr            = 16'h0000;
-    ram_din             = 16'h0000;
-    ram_ld              = 1'b0;
-    ram_str             = 1'b0;
+    miso                 = 1'b0;
+    rom_addr             = 16'h0000;
+    rom_sel              = 1'b0;
+    ram_addr             = 16'h0000;
+    ram_din              = 16'h0000;
+    ram_ld               = 1'b0;
+    ram_str              = 1'b0;
 
-    cmd_shift           = 8'h00;
-    addr_shift          = 16'h0000;
-    wr_shift            = 16'h0000;
-    rd_shift            = 16'h0000;
-    cmd                 = 8'h00;
-    addr                = 16'h0000;
-    bit_count           = 6'd0;
-    active_dev          = 1'b0;
-    read_arm            = 1'b0;
-    read_active         = 1'b0;
+    cmd_shift            = 8'h00;
+    addr_shift           = 24'h000000;
+    wr_shift             = 16'h0000;
+    rd_shift             = 16'h0000;
+
+    cmd                  = 8'h00;
+    addr_full            = 24'h000000;
+    addr                 = 16'h0000;
+    bit_count            = 6'd0;
+
+    read_arm             = 1'b0;
+    read_active          = 1'b0;
 
     write_commit_pending = 1'b0;
     write_commit_addr    = 16'h0000;
     write_commit_data    = 16'h0000;
   end
 
-  // reset / end-of-transaction cleanup
-  always @(posedge rst or posedge cs_flash or posedge cs_ram) begin
-    if (rst) begin
+  always @(negedge rst_n or posedge cs_flash or posedge cs_ram) begin
+    if (!rst_n) begin
       miso                 <= 1'b0;
       rom_sel              <= 1'b0;
       ram_ld               <= 1'b0;
       ram_str              <= 1'b0;
 
       cmd_shift            <= 8'h00;
-      addr_shift           <= 16'h0000;
+      addr_shift           <= 24'h000000;
       wr_shift             <= 16'h0000;
       rd_shift             <= 16'h0000;
+
       cmd                  <= 8'h00;
+      addr_full            <= 24'h000000;
       addr                 <= 16'h0000;
       bit_count            <= 6'd0;
-      active_dev           <= 1'b0;
+
       read_arm             <= 1'b0;
       read_active          <= 1'b0;
 
@@ -97,27 +106,22 @@ module spi_mem_bridge_sim
       ram_str     <= 1'b0;
 
       cmd_shift   <= 8'h00;
-      addr_shift  <= 16'h0000;
+      addr_shift  <= 24'h000000;
       wr_shift    <= 16'h0000;
       rd_shift    <= 16'h0000;
+
       cmd         <= 8'h00;
+      addr_full   <= 24'h000000;
       addr        <= 16'h0000;
       bit_count   <= 6'd0;
+
       read_arm    <= 1'b0;
       read_active <= 1'b0;
     end
   end
-    reg [7:0]  next_cmd;
-    reg [15:0] next_addr;
-    reg [15:0] next_wr;
-  // sample MOSI on rising edge of SPI clock
+
   always @(posedge sclk) begin
-    
-
-    if (!rst && any_cs_active) begin
-      active_dev = (~cs_flash) ? 1'b0 : 1'b1;
-
-      // command byte
+    if (rst_n && any_cs_active) begin
       if (bit_count < 6'd8) begin
         next_cmd  = {cmd_shift[6:0], mosi};
         cmd_shift <= next_cmd;
@@ -125,24 +129,24 @@ module spi_mem_bridge_sim
         if (bit_count == 6'd7)
           cmd <= next_cmd;
       end
-      // 16-bit address
-      else if (bit_count < 6'd24) begin
-        next_addr   = {addr_shift[14:0], mosi};
-        addr_shift  <= next_addr;
+      else if (bit_count < 6'd32) begin
+        next_addr  = {addr_shift[22:0], mosi};
+        addr_shift <= next_addr;
 
-        if (bit_count == 6'd23) begin
-          addr <= next_addr;
+        if (bit_count == 6'd31) begin
+          addr_full <= next_addr;
+          addr      <= next_addr[16:1];
 
-          if (active_dev == 1'b0) begin
-            rom_addr <= next_addr;
+          if (flash_active) begin
+            rom_addr <= next_addr[16:1];
 
             if (cmd == 8'h03) begin
               rom_sel  <= 1'b1;
               read_arm <= 1'b1;
             end
           end
-          else begin
-            ram_addr <= next_addr;
+          else if (ram_active) begin
+            ram_addr <= next_addr[16:1];
 
             if (cmd == 8'h03) begin
               ram_ld   <= 1'b1;
@@ -151,17 +155,14 @@ module spi_mem_bridge_sim
           end
         end
       end
-      // write payload for RAM write
-      else if ((cmd == 8'h02) && (bit_count < 6'd40)) begin
+      else if ((cmd == 8'h02) && ram_active && (bit_count < 6'd48)) begin
         next_wr  = {wr_shift[14:0], mosi};
         wr_shift <= next_wr;
 
-        if (bit_count == 6'd39) begin
-          if (!cs_ram) begin
-            write_commit_addr    <= addr;
-            write_commit_data    <= next_wr;
-            write_commit_pending <= 1'b1;
-          end
+        if (bit_count == 6'd47) begin
+          write_commit_addr    <= addr;
+          write_commit_data    <= next_wr;
+          write_commit_pending <= 1'b1;
         end
       end
 
@@ -169,11 +170,10 @@ module spi_mem_bridge_sim
     end
   end
 
-  // drive MISO on falling edge so master can sample on following rising edge
   always @(negedge sclk) begin
-    if (!rst && any_cs_active) begin
+    if (rst_n && any_cs_active) begin
       if (read_arm) begin
-        if (!cs_flash) begin
+        if (flash_active) begin
           miso     <= rom_data[15];
           rd_shift <= {rom_data[14:0], 1'b0};
         end
@@ -193,23 +193,25 @@ module spi_mem_bridge_sim
         miso <= 1'b0;
       end
     end
+    else begin
+      miso <= 1'b0;
+    end
   end
 
-  // commit RAM write on main sim clock
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      ram_str <= 1'b0;
-      ram_din <= 16'h0000;
-      ram_addr <= 16'h0000;
+  always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      ram_str              <= 1'b0;
+      ram_din              <= 16'h0000;
+      ram_addr             <= 16'h0000;
       write_commit_pending <= 1'b0;
     end
     else begin
       ram_str <= 1'b0;
 
       if (write_commit_pending) begin
-        ram_addr <= write_commit_addr;
-        ram_din  <= write_commit_data;
-        ram_str  <= 1'b1;
+        ram_addr             <= write_commit_addr;
+        ram_din              <= write_commit_data;
+        ram_str              <= 1'b1;
         write_commit_pending <= 1'b0;
       end
     end

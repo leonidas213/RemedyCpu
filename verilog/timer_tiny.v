@@ -1,5 +1,5 @@
-module timer (
-    input  [15:0] dOut,
+module timer_tiny (
+    input  [8:0] dOut,
     input  [15:0] Addr,
     input         ioW,
     input         C,
@@ -14,9 +14,9 @@ module timer (
     output        timer_interrupt
   );
 
-  reg [15:0] target       ;
-  reg [15:0] count        ;
-  reg [14:0] prescale_cnt ;
+  reg [8:0] target        ;
+  reg [8:0] count         ;
+  reg [14:0] prescale_cnt  ;
   reg [6:0]  conf         ;
 
   wire wr_conf   = ioW && (Addr == timerConfigAddr);
@@ -24,9 +24,9 @@ module timer (
   wire wr_reset  = ioW && (Addr == timerResetAddr) && dOut[0];
   wire wr_sync_start = ioW && (Addr == timerSyncStartAddr);
 
-  wire rd_count  =  (Addr == timerReadAddr);
-  wire rd_target =  (Addr == timerTargetAddr);
-  wire rd_conf   =  (Addr == timerConfigAddr);
+  wire rd_count  = (Addr == timerReadAddr);
+  wire rd_target = (Addr == timerTargetAddr);
+  wire rd_conf   = (Addr == timerConfigAddr);
 
   wire       timer_en     = conf[0];
   wire [3:0] prescaler    = conf[4:1];
@@ -80,8 +80,8 @@ module timer (
   begin
     if (!rst_n)
     begin
-      target       <= 16'h0000;
-      count        <= 16'h0000;
+      target       <= 8'h00;
+      count        <= 8'h00;
       prescale_cnt <= 15'h0000;
       conf         <= 7'h00;
     end
@@ -94,15 +94,15 @@ module timer (
       end
 
       if (wr_target)
-        target <= dOut;
+        target <= dOut[8:0];
 
       if (wr_sync_start)
         conf[0] <= dOut[0];
 
       if (wr_reset)
       begin
-        count        <= 16'h0000;
-        conf         <=7'h00;
+        count        <= 8'h00;
+        conf        <=7'h00;
       end
       else
       begin
@@ -114,19 +114,19 @@ module timer (
           if (matched)
           begin
             if (auto_reload)
-              count <= 16'h0000;
+              count <= 8'h00;
           end
           else if (tick)
           begin
-            count <= count + 16'd1;
+            count <= count + 8'd1;
           end
         end
       end
     end
   end
 
-  assign TimerOut = rd_count  ? count             :
-         rd_target ? target            :
+  assign TimerOut = rd_count  ? {8'h0, count }            :
+         rd_target ? {8'h0, target }            :
          rd_conf   ? {9'h000, conf}   :
          16'h0000;
 
