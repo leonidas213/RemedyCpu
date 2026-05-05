@@ -7,8 +7,9 @@ module programCounter
     input  wire        absJmp,
     input  wire        intr,
     input  wire        reti,
+    input  wire [15:0] deb_jump_addr,
+    input  wire        deb_jump,
     input  wire        relJmp,
-    output wire [15:0] Nextpc,
     output wire [15:0] PC
   );
 
@@ -16,9 +17,6 @@ module programCounter
   reg [15:0] interruptAdress;
 
   reg [15:0] PCr;
-  reg [15:0] Nextpcr;
-
-  assign Nextpc = Nextpcr;
   assign PC     = PCr;
 
   always @(posedge clk , negedge rst_n)
@@ -26,7 +24,6 @@ module programCounter
     if (!rst_n)
     begin
       PCr     <= 16'h0000;
-      Nextpcr <= 16'h0001;
       interruptAdress <= 16'h0000;
     end
     else if (pc_en)
@@ -34,7 +31,6 @@ module programCounter
       if (reti)
       begin
         PCr     <= interruptAdress + 16'd1;
-        Nextpcr <= interruptAdress + 16'd2;
       end
       else if (intr)
       begin
@@ -44,23 +40,23 @@ module programCounter
           interruptAdress <= PCr;
 
         PCr     <= interuptFuncAdr;
-        Nextpcr <= interuptFuncAdr + 16'd1;
       end
       else if (relJmp)
       begin
         PCr     <= PCr + AluIn + 16'd1;
-        Nextpcr <= Nextpcr + AluIn + 16'd1;
       end
       else if (absJmp)
       begin
         PCr     <= AluIn;
-        Nextpcr <= AluIn + 16'd1;
       end
       else
       begin
         PCr     <= PCr + 16'd1;
-        Nextpcr <= Nextpcr + 16'd1;
       end
+    end
+    else if(deb_jump)
+    begin
+      PCr <= deb_jump_addr;
     end
   end
 

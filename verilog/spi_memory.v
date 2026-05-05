@@ -6,7 +6,6 @@ module spi_memory_interface (
     input  wire [15:0] addr,          // 16-bit memory address
     input  wire [15:0] data_in,       // 16-bit data input (for write)
     output reg  [15:0] data_out,      // 16-bit data output (for read)
-    input  wire        is_continous,  // Continuous transaction flag
     output reg         spi_cs,        // SPI Chip Select (Active Low)
     output reg         spi_clk,       // SPI Clock
     output reg         busy,          // Busy signal
@@ -42,7 +41,6 @@ module spi_memory_interface (
 
   reg [0:0] prev_command;
   reg [15:0] prev_addr;
-  reg prev_is_continous;
   wire [23:0] spi_addr;
   assign spi_addr = {7'b0000000, addr, 1'b0};
 
@@ -75,7 +73,6 @@ module spi_memory_interface (
 
             prev_command <= command;
             prev_addr <= addr;
-            prev_is_continous <= is_continous;
 
             if (st)
             begin
@@ -223,8 +220,7 @@ module spi_memory_interface (
         decideFate:
         begin
           if (command == prev_command &&
-              addr == prev_addr + 1 &&
-              is_continous == prev_is_continous)
+              addr == prev_addr + 1 )
           begin
             // Continue without releasing CS
             shift_reg <= command ? data_in[15:8] : 8'h00;

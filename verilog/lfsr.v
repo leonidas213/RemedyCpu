@@ -1,10 +1,10 @@
 module lfsr_RandomNumberGen (
-    input  [15:0] adrrIn,
+    input  [4:0] adrrIn,
     input  [7:0] dataIn,
     input         ioW,
     input         clk,
-    input  [15:0] SeedAdr,
-    input  [15:0] RngAdr,
+    input  [4:0] SeedAdr,
+    input  [4:0] RngAdr,
     output [15:0] Out
 );
 

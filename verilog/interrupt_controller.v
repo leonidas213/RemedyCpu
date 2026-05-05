@@ -1,18 +1,18 @@
 module interrupt_controller_small (
     input  [3:0] dOut,
-    input  [15:0] Addr,
+    input  [4:0] Addr,
     input         ioW,
     input         C,
     input         rst_n,
 
-    input  [3:0]  irq_in,
+    input  [2:0]  irq_in,
     input         imm,
     input         reti,
     input         pc_en,
 
-    input  [15:0] CPUInterruptEnableAddr,
-    input  [15:0] inputInterruptAddr,
-    input  [15:0] interruptRegAddr,
+    input  [4:0] CPUInterruptEnableAddr,
+    input  [4:0] inputInterruptAddr,
+    input  [4:0] interruptRegAddr,
 
     output [15:0] InterruptOut,
     output        intr,
@@ -21,8 +21,8 @@ module interrupt_controller_small (
 
   reg       global_enable;
   reg       irq_lock_r   ;
-  reg [3:0] irq_enable   ;
-  reg [3:0] irq_pending  ;
+  reg [2:0] irq_enable   ;
+  reg [2:0] irq_pending  ;
 
   wire wr_ctrl;
   wire wr_enable;
@@ -32,8 +32,8 @@ module interrupt_controller_small (
   wire rd_enable;
   wire rd_pending;
 
-  wire [3:0] pending_with_new_irq;
-  wire [3:0] active_irq;
+  wire [2:0] pending_with_new_irq;
+  wire [2:0] active_irq;
   wire       intr_take;
 
   assign wr_ctrl    = ioW && (Addr == CPUInterruptEnableAddr);
@@ -75,7 +75,7 @@ module interrupt_controller_small (
 
       // write 1 to clear pending bits
       if (wr_pending)
-        irq_pending <= pending_with_new_irq & ~dOut[3:0];
+        irq_pending <= pending_with_new_irq & ~dOut[2:0];
 
       // lock once interrupt is actually taken
       if (intr_take)
@@ -89,8 +89,8 @@ module interrupt_controller_small (
 
   assign InterruptOut =
       rd_ctrl    ? {13'h0000, intr, irq_lock_r, global_enable} :
-      rd_enable  ? {12'h000, irq_enable} :
-      rd_pending ? {12'h000, irq_pending} :
+      rd_enable  ? {13'h000, irq_enable} :
+      rd_pending ? {13'h000, irq_pending} :
       16'h0000;
 
 endmodule

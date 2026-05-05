@@ -1,14 +1,14 @@
 module timer (
     input  [15:0] dOut,
-    input  [15:0] Addr,
+    input  [4:0] Addr,
     input         ioW,
     input         C,
     input         InterLock,
-    input  [15:0] timerConfigAddr,
-    input  [15:0] timerTargetAddr,
-    input  [15:0] timerResetAddr,
-    input  [15:0] timerReadAddr,
-    input  [15:0] timerSyncStartAddr,
+    input  [4:0] timerConfigAddr,
+    input  [4:0] timerTargetAddr,
+    input  [4:0] timerResetAddr,
+    input  [4:0] timerReadAddr,
+    input  [4:0] timerSyncStartAddr,
     input         rst_n,
     output [15:0] TimerOut,
     output        timer_interrupt
@@ -16,7 +16,7 @@ module timer (
 
   reg [15:0] target       ;
   reg [15:0] count        ;
-  reg [14:0] prescale_cnt ;
+  reg [10:0] prescale_cnt ;
   reg [6:0]  conf         ;
 
   wire wr_conf   = ioW && (Addr == timerConfigAddr);
@@ -61,16 +61,6 @@ module timer (
         tick = &prescale_cnt[8:0];    // /512
       4'd10:
         tick = &prescale_cnt[9:0];    // /1024
-      4'd11:
-        tick = &prescale_cnt[10:0];   // /2048
-      4'd12:
-        tick = &prescale_cnt[11:0];   // /4096
-      4'd13:
-        tick = &prescale_cnt[12:0];   // /8192
-      4'd14:
-        tick = &prescale_cnt[13:0];   // /16384
-      4'd15:
-        tick = &prescale_cnt[14:0];   // /32768
       default:
         tick = 1'b1;
     endcase
@@ -82,7 +72,7 @@ module timer (
     begin
       target       <= 16'h0000;
       count        <= 16'h0000;
-      prescale_cnt <= 15'h0000;
+      prescale_cnt <= 11'h000;
       conf         <= 7'h00;
     end
     else
@@ -90,7 +80,7 @@ module timer (
       if (wr_conf)
       begin
         conf         <= dOut[6:0];
-        prescale_cnt <= 15'h0000;
+        prescale_cnt <= 11'h000;
       end
 
       if (wr_target)
@@ -107,7 +97,7 @@ module timer (
       else
       begin
         if (timer_en)
-          prescale_cnt <= prescale_cnt + 15'd1;
+          prescale_cnt <= prescale_cnt + 11'd1;
 
         if (timer_en && !InterLock)
         begin
