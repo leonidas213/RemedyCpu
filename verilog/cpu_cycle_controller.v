@@ -1,4 +1,9 @@
-module cpu_cycle_controller_tiny
+// this module controlles the execute timing of the CPU.
+// The debugger can interface with this module to alter the execution flow (halt, step, etc).
+// if a data needs to be loaded or stored, the controller will wait for the data_done signal 
+// before proceeding to the next instruction fetch.
+
+module cpu_cycle_controller
 (
     input  wire clk,
     input  wire rst_n,
@@ -29,30 +34,27 @@ module cpu_cycle_controller_tiny
   localparam S_HALTED     = 3'd4;
 
   reg [2:0] state;
-  reg       halt_pending;
   reg       step_active;
 
   wire mem_op;
   wire stop_after_exec;
 
-  assign mem_op           = ld | st | flash_ld;
-  assign fetch_req        = (state == S_REQ_FETCH);
-  assign execute_now_pulse= (state == S_EXECUTE);
-  assign dbg_halted       = (state == S_HALTED);
-  assign stop_after_exec  = dbg_enable & (halt_pending | step_active | dbg_break_after_exec);
+  assign mem_op            = ld | st | flash_ld;
+  assign fetch_req         = (state == S_REQ_FETCH);
+  assign execute_now_pulse = (state == S_EXECUTE);
+  assign dbg_halted        = (state == S_HALTED);
+  assign stop_after_exec   = dbg_enable & (dbg_halt_req | step_active | dbg_break_after_exec);
 
   always @(posedge clk or negedge rst_n)
   begin
     if (!rst_n)
     begin
-      state        <= S_REQ_FETCH;
-      halt_pending <= 1'b0;
-      step_active  <= 1'b0;
+      state       <= S_REQ_FETCH;
+      step_active <= 1'b0;
     end
     else if (!dbg_enable)
     begin
-      halt_pending <= 1'b0;
-      step_active  <= 1'b0;
+      step_active <= 1'b0;
 
       case (state)
         S_REQ_FETCH:  state <= S_WAIT_FETCH;
@@ -64,17 +66,13 @@ module cpu_cycle_controller_tiny
     end
     else
     begin
-      if (dbg_halt_req)
-        halt_pending <= 1'b1;
-
       case (state)
         S_REQ_FETCH:
         begin
           if (dbg_halt_req)
           begin
-            state        <= S_HALTED;
-            halt_pending <= 1'b0;
-            step_active  <= 1'b0;
+            state       <= S_HALTED;
+            step_active <= 1'b0;
           end
           else
             state <= S_WAIT_FETCH;
@@ -84,11 +82,10 @@ module cpu_cycle_controller_tiny
         begin
           if (fetch_done)
           begin
-            if (dbg_break_hit | halt_pending)
+            if (dbg_break_hit | dbg_halt_req)
             begin
-              state        <= S_HALTED;
-              halt_pending <= 1'b0;
-              step_active  <= 1'b0;
+              state       <= S_HALTED;
+              step_active <= 1'b0;
             end
             else
               state <= S_EXECUTE;
@@ -101,9 +98,8 @@ module cpu_cycle_controller_tiny
             state <= S_WAIT_DATA;
           else if (stop_after_exec)
           begin
-            state        <= S_HALTED;
-            halt_pending <= 1'b0;
-            step_active  <= 1'b0;
+            state       <= S_HALTED;
+            step_active <= 1'b0;
           end
           else
             state <= S_REQ_FETCH;
@@ -115,9 +111,8 @@ module cpu_cycle_controller_tiny
           begin
             if (stop_after_exec)
             begin
-              state        <= S_HALTED;
-              halt_pending <= 1'b0;
-              step_active  <= 1'b0;
+              state       <= S_HALTED;
+              step_active <= 1'b0;
             end
             else
               state <= S_REQ_FETCH;
@@ -126,8 +121,6 @@ module cpu_cycle_controller_tiny
 
         S_HALTED:
         begin
-          halt_pending <= 1'b0;
-
           if (dbg_run_req)
           begin
             state       <= S_REQ_FETCH;
@@ -142,9 +135,8 @@ module cpu_cycle_controller_tiny
 
         default:
         begin
-          state        <= S_REQ_FETCH;
-          halt_pending <= 1'b0;
-          step_active  <= 1'b0;
+          state       <= S_REQ_FETCH;
+          step_active <= 1'b0;
         end
       endcase
     end

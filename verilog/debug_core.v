@@ -1,9 +1,19 @@
-module debug_core_tiny
+// Debugger's core logic.
+// it can
+// - set breakpoint(only 1 at the moment)
+// - halt and run the CPU
+// - single step the CPU
+// - load a new PC value into the CPU to jump to an arbitrary location (useful for stepping through reset/startup code that is not easily reachable with a breakpoint)
+// - static break on BRK instruction (compiled into the code) (useful for catching infinite loops in startup code)
+// It also provides a register interface for the debugger to read CPU status and control the debug features.
+// - Program counter, instruction register, and flags are readable for debugging purposes.
+//
+module debug_core
   (
     input  wire        clk,
     input  wire        rst_n,
 
-    // Tiny register port
+    // Register port
     input  wire        reg_wr,
     input  wire [3:0]  reg_addr,
     input  wire [15:0] reg_wdata,
@@ -26,11 +36,12 @@ module debug_core_tiny
 
     output wire        dbg_break_hit,
     output wire        dbg_break_after_exec,
-    // New one-cycle debug actions
-    output reg         dbg_soft_reset_req,
-    output reg         dbg_jump_req,
-    output reg  [15:0] dbg_jump_addr
 
+    // Debug load-PC request.
+    // dbg_jump_req is sticky and stays high until dbg_jump_ack is seen.
+    output reg         dbg_jump_req,
+    output reg  [15:0] dbg_jump_addr,
+    input  wire        dbg_jump_ack
   );
 
   localparam REG_ID        = 4'h0;
@@ -48,11 +59,11 @@ module debug_core_tiny
   //   bit1 = halt request level/set
   //   bit2 = run pulse
   //   bit3 = step pulse
-  //   bit4 = soft reset pulse
+  //   bit4 = reserved
   //   bit5 = static BRK enable level
-  //   bit6 = jump/load-PC pulse using REG_JUMP_ADDR
+  //   bit6 = jump/load-PC request using REG_JUMP_ADDR
 
-  // One dynamic breakpoint only
+  // One dynamic breakpoint only sadly
   reg  [15:0] bp0;
   reg         bp_enable;
   reg         bp_resume_mask;
@@ -62,7 +73,7 @@ module debug_core_tiny
   assign resume_cmd = dbg_run_req | dbg_step_req;
   assign bp_raw_hit = dbg_enable & bp_enable & (cpu_pc == bp0);
 
-  assign dbg_break_hit = bp_raw_hit & ~bp_resume_mask;
+  assign dbg_break_hit        = bp_raw_hit & ~bp_resume_mask;
   assign dbg_break_after_exec = dbg_enable & static_break_enable & instr_is_brk;
 
   always @(posedge clk or negedge rst_n)
@@ -74,7 +85,6 @@ module debug_core_tiny
       dbg_run_req          <= 1'b0;
       dbg_step_req         <= 1'b0;
       static_break_enable  <= 1'b0;
-      dbg_soft_reset_req   <= 1'b0;
       dbg_jump_req         <= 1'b0;
       dbg_jump_addr        <= 16'h0000;
       bp0                  <= 16'h0000;
@@ -82,10 +92,10 @@ module debug_core_tiny
     end
     else
     begin
-      dbg_run_req        <= 1'b0;
-      dbg_step_req       <= 1'b0;
-      dbg_soft_reset_req <= 1'b0;
-      dbg_jump_req       <= 1'b0;
+      dbg_run_req  <= 1'b0;
+      dbg_step_req <= 1'b0;
+      if (dbg_jump_ack)
+        dbg_jump_req <= 1'b0;
 
       if (cpu_dbg_halted)
         dbg_halt_req <= 1'b0;
@@ -99,7 +109,10 @@ module debug_core_tiny
             static_break_enable <= reg_wdata[5];
 
             if (!reg_wdata[0])
+            begin
               dbg_halt_req <= 1'b0;
+              dbg_jump_req <= 1'b0;
+            end
 
             if (reg_wdata[1] && reg_wdata[0])
               dbg_halt_req <= 1'b1;
@@ -116,16 +129,8 @@ module debug_core_tiny
               dbg_halt_req <= 1'b0;
             end
 
-            if (reg_wdata[4] && reg_wdata[0])
-            begin
-              dbg_soft_reset_req <= 1'b1;
-              dbg_halt_req       <= 1'b0;
-            end
-
             if (reg_wdata[6] && reg_wdata[0])
-            begin
               dbg_jump_req <= 1'b1;
-            end
           end
 
           REG_BP0:
@@ -159,17 +164,17 @@ module debug_core_tiny
           static_break_enable,
           dbg_enable,
           cpu_dbg_halted,
-          dbg_soft_reset_req,
-          dbg_jump_req,
+          1'b0,          // reserved
+          dbg_jump_req,  // pending jump/load-PC request
           dbg_halt_req
         };
 
       REG_CONTROL:
         reg_rdata = {
           9'h000,
-          1'b0,                  // bit6 jump is write-only pulse
+          dbg_jump_req,          // bit6: pending jump state
           static_break_enable,   // bit5
-          1'b0,                  // bit4 soft reset is write-only pulse
+          1'b0,                  // bit4 reserved
           1'b0,                  // bit3 step is write-only pulse
           1'b0,                  // bit2 run is write-only pulse
           dbg_halt_req,          // bit1
@@ -208,4 +213,5 @@ module debug_core_tiny
     else if (cpu_dbg_halted & resume_cmd)
       bp_resume_mask <= 1'b1;
   end
+
 endmodule

@@ -1,4 +1,9 @@
-module memory_wait_controller_tiny
+// this module controls the flow of memory access.
+// So either instruction fetch or data load/store, the CPU will wait for this controller to assert the done signal 
+//before proceeding to the next step.
+// Wtih this core it is also possible to read from program memory and then store it into tthe registers.
+
+module memory_wait_controller
 (
     input  wire        clk,
     input  wire        rst_n,

@@ -1,4 +1,15 @@
-module debug_serial_frontend_tiny
+// Debugger's communicator.
+// RX protocol, MSB first:
+//   8'hA5 sync + 4-bit cmd + 4-bit addr + 16-bit data = 32 clocks
+// The RX side uses a sliding 32-bit window. If one clock is missed or extra,
+// it automatically locks again when the next 8'hA5 header appears.
+// and after that TX Message is
+// 16-bit data, MSB first, on the next 16 dbg_clk falling edges.
+//  if it is accepted, the data is 0xACCE.
+//  If it is a read command, the data is the register value.
+//  If it is a ping command, the data is 0xDB12. Otherwise,
+//  the data is 0xEEEE to indicate an error.
+module debug_serial_frontend
 (
     input  wire        cpu_clk,
     input  wire        rst_n,
@@ -13,12 +24,6 @@ module debug_serial_frontend_tiny
     output reg  [15:0] reg_wdata,
     input  wire [15:0] reg_rdata
 );
-
-    // New RX protocol, MSB first:
-    //   8'hA5 sync + 4-bit cmd + 4-bit addr + 16-bit data = 32 clocks
-    // The RX side uses a sliding 32-bit window. If one clock is missed or extra,
-    // it automatically locks again when the next 8'hA5 header appears.
-
     localparam S_RX        = 3'd0;
     localparam S_EXEC      = 3'd1;
     localparam S_LOAD_TX   = 3'd2;

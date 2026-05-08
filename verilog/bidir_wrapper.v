@@ -1,11 +1,11 @@
 
-
+// FPGA only
 module bidir_wrapper (
     output wire [7:0] data_in,
     input wire  [7:0]  data_out,
     input wire  [7:0]  data_oe,
 
-    inout wire [7:0]  io // bidirectional dont forget to change inout
+    inout wire [7:0]  io // bidirectional dont forget to change inout on top level
 );
     assign io[0] = data_oe[0] ? data_out[0] : 1'bz;
     assign io[1] = data_oe[1] ? data_out[1] : 1'bz;

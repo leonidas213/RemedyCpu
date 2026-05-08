@@ -1,3 +1,11 @@
+// A small interrupt controller module with 3 interrupt sources and a global enable bit.
+// The interrupt pending bits are automatically latched when an interrupt request comes in, and can be
+// cleared by writing to the interrupt register. Once an interrupt is taken, it is locked until the
+// RETI instruction is executed. The controller also provides a simple memory-mapped interface for
+// the CPU to read the interrupt status and control the interrupt enable bits.
+// Every interrupt's jump address is fixed and determined by the hardware design which is 0x0002
+//
+
 module interrupt_controller_small (
     input  [3:0] dOut,
     input  [4:0] Addr,

@@ -1,4 +1,4 @@
-module debug_panel_serial_sim_tiny
+module debug_panel_serial_sim
 (
     input  wire        clk,
     input  wire        rst_n,

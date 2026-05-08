@@ -10,6 +10,7 @@ module timer (
     input  [4:0] timerReadAddr,
     input  [4:0] timerSyncStartAddr,
     input         rst_n,
+    input         execute_pulse,
     output [15:0] TimerOut,
     output        timer_interrupt
   );
@@ -17,7 +18,7 @@ module timer (
   reg [15:0] target       ;
   reg [15:0] count        ;
   reg [10:0] prescale_cnt ;
-  reg [6:0]  conf         ;
+  reg [7:0]  conf         ;
 
   wire wr_conf   = ioW && (Addr == timerConfigAddr);
   wire wr_target = ioW && (Addr == timerTargetAddr);
@@ -28,43 +29,52 @@ module timer (
   wire rd_target =  (Addr == timerTargetAddr);
   wire rd_conf   =  (Addr == timerConfigAddr);
 
-  wire       timer_en     = conf[0];
-  wire [3:0] prescaler    = conf[4:1];
-  wire       auto_reload  = conf[5];
-  wire       irq_en       = conf[6];
-  wire       target_valid = (target != 16'h0000);
-  wire       matched      = target_valid && (count == target);
+  wire       timer_en       = conf[0];
+  wire [3:0] prescaler      = conf[4:1];
+  wire       auto_reload    = conf[5];
+  wire       irq_en         = conf[6];
+  wire       source_execute = conf[7];
+  wire       target_valid   = (target != 16'h0000);
+  wire       matched        = target_valid && (count == target);
 
-  reg tick;
+  // source_execute = 0: prescaler advances every C clock
+  // source_execute = 1: prescaler advances only on execute_pulse
+  wire source_tick = source_execute ? execute_pulse : 1'b1;
+
+  reg prescale_tick;
   always @(*)
   begin
     case (prescaler)
       4'd0:
-        tick = 1'b1;                  // /1
+        prescale_tick = 1'b1;                  // /1
       4'd1:
-        tick = prescale_cnt[0];       // /2
+        prescale_tick = prescale_cnt[0];       // /2
       4'd2:
-        tick = &prescale_cnt[1:0];    // /4
+        prescale_tick = &prescale_cnt[1:0];    // /4
       4'd3:
-        tick = &prescale_cnt[2:0];    // /8
+        prescale_tick = &prescale_cnt[2:0];    // /8
       4'd4:
-        tick = &prescale_cnt[3:0];    // /16
+        prescale_tick = &prescale_cnt[3:0];    // /16
       4'd5:
-        tick = &prescale_cnt[4:0];    // /32
+        prescale_tick = &prescale_cnt[4:0];    // /32
       4'd6:
-        tick = &prescale_cnt[5:0];    // /64
+        prescale_tick = &prescale_cnt[5:0];    // /64
       4'd7:
-        tick = &prescale_cnt[6:0];    // /128
+        prescale_tick = &prescale_cnt[6:0];    // /128
       4'd8:
-        tick = &prescale_cnt[7:0];    // /256
+        prescale_tick = &prescale_cnt[7:0];    // /256
       4'd9:
-        tick = &prescale_cnt[8:0];    // /512
+        prescale_tick = &prescale_cnt[8:0];    // /512
       4'd10:
-        tick = &prescale_cnt[9:0];    // /1024
+        prescale_tick = &prescale_cnt[9:0];    // /1024
+      4'd11:
+        prescale_tick = &prescale_cnt[10:0];   // /2048
       default:
-        tick = 1'b1;
+        prescale_tick = 1'b1;
     endcase
   end
+
+  wire timer_tick = source_tick && prescale_tick;
 
   always @(posedge C or negedge rst_n)
   begin
@@ -73,13 +83,13 @@ module timer (
       target       <= 16'h0000;
       count        <= 16'h0000;
       prescale_cnt <= 11'h000;
-      conf         <= 7'h00;
+      conf         <= 8'h00;
     end
     else
     begin
       if (wr_conf)
       begin
-        conf         <= dOut[6:0];
+        conf         <= dOut[7:0];
         prescale_cnt <= 11'h000;
       end
 
@@ -92,11 +102,12 @@ module timer (
       if (wr_reset)
       begin
         count        <= 16'h0000;
-        conf         <=7'h00;
+        prescale_cnt <= 11'h000;
+        conf         <= 8'h00;
       end
       else
       begin
-        if (timer_en)
+        if (timer_en && source_tick)
           prescale_cnt <= prescale_cnt + 11'd1;
 
         if (timer_en && !InterLock)
@@ -106,7 +117,7 @@ module timer (
             if (auto_reload)
               count <= 16'h0000;
           end
-          else if (tick)
+          else if (timer_tick)
           begin
             count <= count + 16'd1;
           end
@@ -115,10 +126,10 @@ module timer (
     end
   end
 
-  assign TimerOut = rd_count  ? count             :
-         rd_target ? target            :
-         rd_conf   ? {9'h000, conf}   :
-         16'h0000;
+  assign TimerOut = rd_count  ? count           :
+                    rd_target ? target          :
+                    rd_conf   ? {8'h00, conf}   :
+                    16'h0000;
 
   assign timer_interrupt = irq_en && !InterLock && matched;
 
