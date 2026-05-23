@@ -2061,11 +2061,7 @@
         </entry>
         <entry>
           <string>externalInputs</string>
-<<<<<<< Updated upstream
           <string>dOut:16,Addr:5,ioW,C,InterLock,timerConfigAddr:5,timerTargetAddr:5,timerResetAddr:5,timerReadAddr:5,timerSyncStartAddr:5,rst_n,execute_pulse</string>
-=======
-          <string>dOut:16,Addr:5,ioW,C,InterLock,timerConfigAddr:5,timerTargetAddr:5,timerResetAddr:5,timerReadAddr:5,timerSyncStartAddr:5,rst_n</string>
->>>>>>> Stashed changes
         </entry>
         <entry>
           <string>externalOutputs</string>
@@ -2161,11 +2157,7 @@
         </entry>
         <entry>
           <string>externalInputs</string>
-<<<<<<< Updated upstream
           <string>dOut:9,Addr:5,ioW,C,InterLock,timerConfigAddr:5,timerTargetAddr:5,timerResetAddr:5,timerReadAddr:5,timerSyncStartAddr:5,rst_n,execute_pulse</string>
-=======
-          <string>dOut:9,Addr:5,ioW,C,InterLock,timerConfigAddr:5,timerTargetAddr:5,timerResetAddr:5,timerReadAddr:5,timerSyncStartAddr:5,rst_n</string>
->>>>>>> Stashed changes
         </entry>
         <entry>
           <string>externalOutputs</string>
@@ -5257,7 +5249,6 @@
         </entry>
         <entry>
           <string>NetName</string>
-<<<<<<< Updated upstream
           <string>execute-pulse</string>
         </entry>
       </elementAttributes>
@@ -5276,12 +5267,6 @@
         </entry>
       </elementAttributes>
       <pos x="-15640" y="-8760"/>
-=======
-          <string>spi_busy_ram</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-15640" y="-8920"/>
->>>>>>> Stashed changes
     </visualElement>
   </visualElements>
   <wires>
@@ -5398,13 +5383,10 @@
       <p2 x="-18600" y="-5380"/>
     </wire>
     <wire>
-<<<<<<< Updated upstream
       <p1 x="-15640" y="-9220"/>
       <p2 x="-15580" y="-9220"/>
     </wire>
     <wire>
-=======
->>>>>>> Stashed changes
       <p1 x="-17680" y="-8200"/>
       <p2 x="-17640" y="-8200"/>
     </wire>
@@ -5853,13 +5835,10 @@
       <p2 x="-18020" y="-8760"/>
     </wire>
     <wire>
-<<<<<<< Updated upstream
       <p1 x="-15640" y="-8760"/>
       <p2 x="-15580" y="-8760"/>
     </wire>
     <wire>
-=======
->>>>>>> Stashed changes
       <p1 x="-14980" y="-7740"/>
       <p2 x="-14060" y="-7740"/>
     </wire>
@@ -7021,13 +7000,6 @@
     </wire>
     <wire>
       <p1 x="-15920" y="-8920"/>
-<<<<<<< Updated upstream
-=======
-      <p2 x="-15700" y="-8920"/>
-    </wire>
-    <wire>
-      <p1 x="-15640" y="-8920"/>
->>>>>>> Stashed changes
       <p2 x="-15580" y="-8920"/>
     </wire>
     <wire>
