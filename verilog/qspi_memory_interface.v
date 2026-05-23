@@ -186,11 +186,11 @@ module qspi_memory_interface (
     localparam integer INIT_CLK_HZ      = 50000000;
     localparam integer INIT_WAIT_BITS   = 22;
 `ifdef COCOTB_SIM_FAST_INIT
-    localparam [INIT_WAIT_BITS-1:0] INIT_POWER_WAIT_CYCLES      = 22'd82;
-    localparam [INIT_WAIT_BITS-1:0] INIT_RESET_WAIT_CYCLES      = 22'd82;
-    localparam [INIT_WAIT_BITS-1:0] INIT_FLASH_SR2_WAIT_CYCLES  = 22'd82;
-    localparam [INIT_WAIT_BITS-1:0] INIT_FLASH_CONT_WAIT_CYCLES = 22'd82;
-    localparam [INIT_WAIT_BITS-1:0] INIT_CMD_GAP_CYCLES         = 22'd82;
+    localparam [INIT_WAIT_BITS-1:0] INIT_POWER_WAIT_CYCLES      = 22'd02;
+    localparam [INIT_WAIT_BITS-1:0] INIT_RESET_WAIT_CYCLES      = 22'd02;
+    localparam [INIT_WAIT_BITS-1:0] INIT_FLASH_SR2_WAIT_CYCLES  = 22'd02;
+    localparam [INIT_WAIT_BITS-1:0] INIT_FLASH_CONT_WAIT_CYCLES = 22'd02;
+    localparam [INIT_WAIT_BITS-1:0] INIT_CMD_GAP_CYCLES         = 22'd02;
 `else
     localparam [INIT_WAIT_BITS-1:0] INIT_POWER_WAIT_CYCLES      = (INIT_CLK_HZ / 1000) * 10;
     localparam [INIT_WAIT_BITS-1:0] INIT_RESET_WAIT_CYCLES      = (INIT_CLK_HZ / 1000) * 2;
